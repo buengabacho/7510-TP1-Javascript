@@ -22,8 +22,10 @@ Fact.parse = function(line) {
 	var match = line.match(/^(.*)\((.*)\).?$/);
 	var parsed = null;
 	if (match) {
-		var name = match[1];
-		var args = match[2].split(',').map((x) => x.trim());
+		var name = 	match[1];
+		var args = 	match[2]
+					.split(',')
+					.map((x) => x.trim());
 		parsed = new Fact(name, args);
 	}
 	return parsed;

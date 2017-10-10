@@ -1,7 +1,9 @@
-var Rule = function (name, uninstancedArgs, uninstancedFacts) {
+var Query = require('./query');
+
+var Rule = function (name, uninstancedArgs, subqueries) {
 	this.name = name;
 	this.uninstancedArgs = uninstancedArgs;
-	this.uninstancedFacts = uninstancedFacts;
+	this.subqueries = subqueries;
 
 	this.tryApply = function(queryData, interpreter) {
 		var self = this;
@@ -13,13 +15,15 @@ var Rule = function (name, uninstancedArgs, uninstancedFacts) {
 			var uninstancedArg = self.uninstancedArgs[idx];
 			argsMap[uninstancedArg] = arg;
 		});
-		uninstancedFacts.forEach(function(uninstancedFact) {
-			var fact = uninstancedFact.instanciate(argsMap);
-			if (!interpreter.checkQuery(fact)) {
-				return false;
+		var result = true;
+		this.subqueries.forEach(function(subquery) {
+			subquery.replaceArgs(argsMap);
+			var querystring = subquery.buildQueryString(argsMap);
+			if (!interpreter.checkQuery(querystring)) {
+				result = false;
 			}
 		});
-		return true;
+		return result;
 	}	
 }
 
@@ -27,10 +31,15 @@ Rule.parse = function(line) {
 		var match = line.match(/^(.*)\((.*)\) *:- *(.*)\.?$/);
 		var parsed = null;
 		if (match) {
-			var name = match[1];
-			var args = match[2].split(',').map((x) => x.trim());
-			var facts = [];
-			parsed = new Rule(name, args, facts);
+			var name = 	match[1];
+			var args = 	match[2]
+						.split(',')
+						.map((x) => x.trim());
+			var subq = 	match[3]
+						.split(/([^\(]*\([^\)]*\))\s*,/)
+						.filter((x) => x ? true : false)
+						.map((x) => Query.parse(x));
+			parsed = 	new Rule(name, args, subq);
 		}
 		return parsed;
 	}

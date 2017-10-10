@@ -23,21 +23,24 @@ var Interpreter = function () {
     	dbArray.forEach(function(line) {
     		self.parseLine(line);
     	});
+    	console.log('rulesAndFacts: ', JSON.stringify(self.rulesAndFacts, null, 2));
     }
 
     this.checkQuery = function (query) {
+    	console.log('query: ', query);
     	var self = this;
     	var parsedQuery = Query.parse(query);
     	var result = false;
-    	if (!parsedQuery) {
-    		// TODO: return error.
-    	} else {
+    	if (parsedQuery) {
     		self.rulesAndFacts.forEach(function(ruleOrFact) {
     			if (ruleOrFact.tryApply(parsedQuery, self)) {
     				result = true;
     			}
-    		});
+    		});    		
+    	} else {
+    		// TODO: return error.
     	}
+    	console.log('result: ', result ? 'true' : 'false');
     	return result;
     }
 
