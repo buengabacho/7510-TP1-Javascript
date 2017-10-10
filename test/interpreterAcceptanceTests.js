@@ -44,6 +44,24 @@ describe("Interpreter", function () {
         // runs after each test in this block
     });
 
+    describe('Parsing', function () {
+        it('wrong format in fact line should throw exception', function () {
+            var failDB = ['varon(juan).', "varon(pepe"];
+            expect(() => interpreter.parseDB(failDB))
+            .to.throw('Error parsing line 1: Not a rule or fact, please check the formatting!');
+        });
+
+        it('wrong format in rule line should throw exception', function () {
+            var failDB = ['varon(juan).', "hija(X, Y) :- mujer(X), padre(Y,."];
+            expect(() => interpreter.parseDB(failDB))
+            .to.throw('Error parsing line 1: Not a rule or fact, please check the formatting!');
+        });
+
+        it('wrong format in query should throw exception', function () {
+            expect(() => interpreter.checkQuery('varon(juan'))
+            .to.throw('Error parsing query: please check the formatting!');
+        });
+    });
 
     describe('Interpreter Facts', function () {
 

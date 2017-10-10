@@ -14,14 +14,18 @@ var Interpreter = function () {
 		if (parsedLine) {
 			this.rulesAndFacts.push(parsedLine);
 		} else {
-			// TODO: return error.
+			throw new Error('Not a rule or fact, please check the formatting!');
 		}
 	}
 
     this.parseDB = function (dbArray) {
     	var self = this;
-    	dbArray.forEach(function(line) {
-    		self.parseLine(line);
+    	dbArray.forEach(function(line, idx) {
+    		try {
+    			self.parseLine(line);
+    		} catch(e) {
+    			throw new Error('Error parsing line ' + idx + ': ' + e.message);
+    		}
     	});
     }
 
@@ -36,7 +40,7 @@ var Interpreter = function () {
     			}
     		});    		
     	} else {
-    		// TODO: return error.
+    		throw new Error('Error parsing query: please check the formatting!');
     	}
     	return result;
     }
