@@ -38,7 +38,7 @@ Rule.parse = function(line) {
 			var subq = 	match[3]
 						.split(/([^\(]*\([^\)]*\))\s*,/)
 						.filter((x) => x ? true : false)
-						.map((x) => Query.parse(x));
+						.map((x) => Query.parse(x.trim()));
 			parsed = 	new Rule(name, args, subq);
 		}
 		return parsed;

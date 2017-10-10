@@ -67,6 +67,10 @@ describe("Interpreter", function () {
             assert(interpreter.checkQuery('padre(mario, pepe)') === false);
         });
 
+        it('padre(roberto, maria) should be false', function () {
+            assert(interpreter.checkQuery('padre(roberto, maria)') === false);
+        });
+
         // TODO: Add more tests
 
     });
